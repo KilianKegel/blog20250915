@@ -36,12 +36,9 @@ that is still present in current x86 CPU processors.
 
 
 ## Abstract
-Introduction of a high precision, high performance and low code size [**`math.h`**](https://www.open-std.org/JTC1/SC22/WG14/www/docs/n1256.pdf#page=224) 
-implementation for UEFI drivers, UEFI shell applications and Windows applications on x86 platforms.
-
-Discussion of design decisions and trade-offs.
-
-Short retrospective of floating point calculation over history.
+This article introduces a high precision, high performance and low code size [**`math.h`**](https://www.open-std.org/JTC1/SC22/WG14/www/docs/n1256.pdf#page=224) implementation for UEFI drivers, UEFI shell applications and Windows applications on x86 platforms.
+It discusses the  design decisions, trade-offs and  describes the validation concept.
+Additionally a short retrospective of floating point calculation is given.
 
 ## Introduction
 ### Retrospective of floating point calculation over history
