@@ -59,6 +59,8 @@ The collaboration between Kahan, Palmer, and Coonen was instrumental in the crea
 
 Today, the legacy of Kahan, Palmer, and Coonen lives on in every modern processor, ensuring that floating point calculations are consistent and reliable across platforms.
 
+#### The Intel 8087 and the IEEE 754 Standard
+The Intel 8087, introduced in 1980, was the first floating-point coprocessor designed to work with the Intel 8086 and 8088 microprocessors. It was a groundbreaking piece of hardware that significantly enhanced the computational capabilities of personal computers by offloading complex floating-point arithmetic operations from the main CPU.
 
 
 
