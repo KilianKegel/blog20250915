@@ -38,23 +38,41 @@ that is still present in current x86 CPU processors.
 ## Abstract
 This article introduces a high precision, high performance and low code size [**`math.h`**](https://www.open-std.org/JTC1/SC22/WG14/www/docs/n1256.pdf#page=224) implementation for UEFI drivers, UEFI shell applications and Windows applications on x86 platforms.
 It discusses the  design decisions, trade-offs and  describes the validation concept.
-Additionally a short retrospective of floating point calculation is given.
+Additionally a very short retrospective of floating point calculation is given.
 
 ## Introduction
-### Retrospective of floating point calculation over history
-#### The Story of William Kahan, Robert Palmer, Jerome Coonen, and the IEEE 754 Standard
+### Retrospective of floating point calculation
+Until the 1970s a floating point standard did not exist. Each manufacturer of computing systems 
+and each programming language implemented its own floating point representation and arithmetic.
+That made it difficult to port software between different systems and to compare results of floating point calculations:
+[YOUTUBE: William Kahan on the 8087 and designing Intel's floating point](https://www.youtube.com/watch?v=L-QVgbdt_qg)
 
-The IEEE 754 floating point standard, now fundamental to all modern computing, was shaped by the vision and collaboration of several key figures—most notably Professor William Kahan, Robert (Bob) Palmer from Intel, and Jerome (Jerry) Coonen.
+The company [**Intel**](https://en.wikipedia.org/wiki/Intel), founded in 1968, decided to provide a floating point coprocessor for their new 16-bit microprocessor,
+and to stop the chaos of incompatible floating point implementations.
 
-**William Kahan**—a professor at the University of California, Berkeley—was the driving force behind the standard. Known as the "father of floating point," Kahan recognized the chaos and incompatibility in floating point arithmetic across different computer systems in the 1970s. He advocated for a universal, reliable, and mathematically sound approach to floating point computation, emphasizing the need for well-defined rounding, exception handling, and special values like NaN (Not a Number) and infinity.
+The upcoming [**8087**]() would provide the *entire floating point library** in one chip:
+* floating point base functions
+  - addition
+  - subtraction
+  - multiplication
+  - division
+* floating point transcendental functions 
+    * square root
+    * tangent
+    * arcus tangent<br>
+      NOTE: sine and cosine and related functions are derived from the tangent/arcus tangent function
+    * logarithm
+    * exponential function
+* 64 bit integer and packed BCD arithmetic
 
-**Robert Palmer** was a senior engineer at Intel and the chief architect of the Intel 8087 floating point coprocessor. Palmer worked closely with Kahan to ensure that the 8087 would implement the features and behaviors Kahan envisioned. Palmer’s technical leadership and willingness to adapt Intel’s hardware design to Kahan’s mathematical requirements were crucial in making the 8087 the first commercial implementation to closely follow what would become the IEEE 754 standard.
+That time the semiconductor technology was able to produce chips with approximately 40.000 transistors.<br>
+The limitation required a very *efficient design* of the FPU (floating point unit) interface and architecture:<br>
+* [**On the Advantages of the 8087’s Stack**](documents/87STACK.pdf)
+* [**How Intel 80x87 Stack Over/Underflow Should Have Been Handled**](documents/STACK87.pdf)
 
-**Jerome Coonen** was a mathematician and computer scientist who worked with Kahan at Berkeley and later joined Intel. Coonen contributed significantly to the design and analysis of floating point algorithms and the formalization of the standard. He played a key role in bridging the gap between theoretical mathematics and practical hardware implementation, helping to translate Kahan’s ideas into specifications that could be realized in silicon.
 
-The collaboration between Kahan, Palmer, and Coonen was instrumental in the creation of the IEEE 754 standard, first published in 1985. Their work established a common foundation for floating point arithmetic, enabling portability, predictability, and correctness in scientific and engineering software worldwide. The Intel 8087, guided by their efforts, became the first widely adopted hardware to implement these principles, setting the stage for all subsequent floating point hardware and software.
 
-Today, the legacy of Kahan, Palmer, and Coonen lives on in every modern processor, ensuring that floating point calculations are consistent and reliable across platforms.
+
 
 #### The Intel 8087 and the IEEE 754 Standard
 The Intel 8087, introduced in 1980, was the first floating-point coprocessor designed to work with the Intel 8086 and 8088 microprocessors. It was a groundbreaking piece of hardware that significantly enhanced the computational capabilities of personal computers by offloading complex floating-point arithmetic operations from the main CPU.
