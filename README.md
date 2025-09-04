@@ -41,7 +41,7 @@ It discusses the  design decisions, trade-offs and  describes the validation con
 Additionally a very short retrospective of floating point calculation is given.
 
 ## Introduction
-### Retrospective of floating point calculation
+### Retrospective
 Until the 1970s a floating point standard did not exist. Each manufacturer of computing systems 
 and each programming language implemented its own floating point representation and arithmetic.
 That made it difficult to port software between different systems and to compare results of floating point calculations:
@@ -50,7 +50,7 @@ That made it difficult to port software between different systems and to compare
 The company [**Intel**](https://en.wikipedia.org/wiki/Intel), founded in 1968, decided to provide a floating point coprocessor for their new 16-bit microprocessor,
 and to stop the chaos of incompatible floating point implementations.
 
-The upcoming [**8087**]() would provide the *entire floating point library** in one chip:
+The upcoming [**8087**]() would provide the **entire floating point library** in one chip:
 * floating point base functions
   - addition
   - subtraction
@@ -58,19 +58,21 @@ The upcoming [**8087**]() would provide the *entire floating point library** in 
   - division
 * floating point transcendental functions 
     * square root
+    * logarithm
+    * exponential function
     * tangent
     * arcus tangent<br>
       NOTE: sine and cosine and related functions are derived from the tangent/arcus tangent function
-    * logarithm
-    * exponential function
 * 64 bit integer and packed BCD arithmetic
 
 That time the semiconductor technology was able to produce chips with approximately 40.000 transistors.<br>
-The limitation required a very *efficient design* of the FPU (floating point unit) interface and architecture:<br>
+The limitation required a very *efficient design* of the FPU (floating point unit) interface and architecture, 
+that was challanging for programmers and compiler writers  :<br>
 * [**On the Advantages of the 8087’s Stack**](documents/87STACK.pdf)
 * [**How Intel 80x87 Stack Over/Underflow Should Have Been Handled**](documents/STACK87.pdf)
 
-
+NOTE: Concurrent FPU designs ([**Motorola 68881**](https://en.wikipedia.org/wiki/Motorola_68881)) appeared later on the
+market with the availability of about 160.000 transistors and a more elegant architecture and interface design.<br>
 
 
 
