@@ -50,7 +50,7 @@ That allows compact and precise implementation also for **POST** (power on self 
 #### Getting finished ...
 
 # Abstract
-This article introduces a high precision, high performance and low code size [**`math.h`**](https://www.open-std.org/JTC1/SC22/WG14/www/docs/n1256.pdf#page=224) implementation for UEFI drivers, UEFI shell applications and Windows applications on x86 platforms.
+This article introduces a high precision, high performance and low code size [**`math.h`**](https://www.open-std.org/JTC1/SC22/WG14/www/docs/n1256.pdf#page=224) implementation for UEFI drivers, UEFI shell applications and Windows applications on x86-64 platforms.
 It discusses the  design decisions, tradeoffs and  describes the validation concept.
 Additionally a short retrospective of floating point calculation is given.
 
@@ -90,20 +90,21 @@ and is not spread internally to higher bit width.<br>
 Calculation of transcendental functions is not supported directly by the **SSE** instruction set.<br>
 
 ## Retrospective
-Until the 1970s a floating point standard did not exist. Each manufacturer of computing systems 
-and each programming language implemented its own floating point representation and arithmetic.
-That made it difficult to port software between different systems and to compare results of floating point calculations:
+Until the 1970s a floating point standard did not exist. Manufacturer of computing systems 
+and programming languages implemented different floating point representation and arithmetic.
+That made it difficult to port software between different systems and to compare results of floating point calculations:<br>
 [YOUTUBE: William Kahan on the 8087 and designing Intel's floating point](https://www.youtube.com/watch?v=L-QVgbdt_qg)
 
 The company [**Intel**](https://en.wikipedia.org/wiki/Intel), founded in 1968, decided to provide a floating point coprocessor (**FPU**) for their new 16-bit microprocessor,
 and to stop the chaos of incompatible floating point implementations.
 
-The upcoming [**8087**]() would provide the **entire floating point library** in one chip:
-* floating point algebraic functions: **addition, subtraction, multiplication, division, square root**
-* floating point transcendental functions: **logarithm, exponential function, tangent, arcus tangent** <br>
-    NOTE: sine and cosine and related functions are derived from the tangent/arcus tangent function
-* floating point constants: **0.0, 1.0, log<sub>2</sub>(e), log<sub>2</sub>(10), log<sub>10</sub>(2), log<sub>e</sub>(2), π**
-* 64 bit integer and packed BCD arithmetic
+The upcoming [**8087**](https://en.wikipedia.org/wiki/X87#8087) was designed to provide the **entire floating‑point library** on a single chip:
+* Floating‑point algebraic functions: **addition, subtraction, multiplication, division, and square root**
+* Floating‑point transcendental functions: **logarithm, exponential, tangent, arctangent** <br>
+  Note: Sine, cosine, and related inverse trigonometric functions became directly available with the **80387**.  
+  Before that, these functions were derived from tangent and arctangent.
+* Floating‑point constants: **0.0, 1.0, log<sub>2</sub>(e), log<sub>2</sub>(10), log<sub>10</sub>(2), log<sub>e</sub>(2), π**
+* **64‑bit** integer and packed BCD arithmetic
 
 That time the semiconductor technology at **Intel** was able to produce chips with approximately 40,000 transistors.<br>
 The limitation required a very *efficient design* of the **FPU** interface and architecture, 
