@@ -89,7 +89,7 @@ and is not spread internally to higher bit width.<br>
 **SSE** is designed for vector processing of arithmetic operations on multiple data sets in parallel.<br>
 Calculation of transcendental functions is not supported directly by the **SSE** instruction set.<br>
 
-## Retrospective
+### Retrospective
 Until the 1970s a floating point standard did not exist. Manufacturer of computing systems 
 and programming languages implemented different floating point representation and arithmetic.
 That made it difficult to port software between different systems and to compare results of floating point calculations:<br>
@@ -125,8 +125,7 @@ it laid the groundwork for future floating-point units.
 In 1985, Intel released the **80387**, which was designed to be fully compliant 
 with the [**IEEE 754 standard**](https://de.wikipedia.org/wiki/IEEE_754), that was finalized in the same year.<br>
 
-## Hardware/Software conditions — Library requirements
-### Library requirements
+# Library requirements
 The UEFI C Library ([**toro C Library**](https://github.com/KilianKegel/toro-C-Library)) runs on x86-64 platforms
 during **POST** in **PEI-**, **DXE-**, **SMM-drivers**, in **UEFI Shell apps** and in **Windows 64/32 console apps**.<br>
 
@@ -136,6 +135,7 @@ during **POST** in **PEI-**, **DXE-**, **SMM-drivers**, in **UEFI Shell apps** a
 **`ldexp()`**, **`log()`**, **`log10()`**, **`modf()`**, **`pow()`**, **`sin()`**, <br>
 **`sinh()`**, **`sqrt()`**, **`tan()`**, **`tanh()`**<br>
 
+# Hardware/Software conditions — 
 
 ## Hardware conditions
 All UEFI-enabled x86-64 platforms provide the **80387** **FPU** and
@@ -144,14 +144,13 @@ the **SSE2** instruction set as a minimum.<br>
 Access to the **80387** and the **SSE** arithmetic unit is possible in all CPU modes and privilege levels.<br>
 
 ## Software conditions
-### Getting finished . . .
+#### Getting finished . . .
 The entire design and development of the [**toro C Library**](https://github.com/KilianKegel/toro-C-Library)
 is done using the latest [**Visual Studio**](https://visualstudio.microsoft.com/vs/) [standard installation for C/C++](https://github.com/KilianKegel/Howto-setup-a-UEFI-Development-PC?tab=readme-ov-file#install-visual-studio-2022).<br>
 **Visual Studio** provides a complete and robust C/C++ development environment that offers best build performance and debugging features . . .<br>
 **Visual Studio** enables developers to achieve their goals quickly.<br>
 
 ### Floating point models: `precise`, `fast`, `strict`
-
 The Microsoft C/C++ compiler offers 3 different **floating point models** in both the 32- and 64-bit codegenerator :<br>
 * **precise**
 * **fast**
@@ -359,6 +358,26 @@ So that each file is employed in build in its respective mode:<br>
 #### 64Bit mode:
 ![](documents/VS202264.png)
 
+# Validating: toroCVS — toro C Library Validation Suite
+**toroCVS** is proprietary test suite to validate the **toro C Library**.<br>
+![](documents/toroCVS.png)
+
+**toro C Library** is validated against the original **Microsoft C Runtime Library** in **Visual Studio 2022**.<br>
+The test suite generates the required test parameters, invokes the **DUT** (*device under test* – math.h function) with these parameters an
+reports the results to a .LOG file in the build folder.<br>
+
+The test is executed on both:<br>
+* **toro C Library**-linked test-application
+* **Microsoft C Runtime Library**-linked test-application
+
+
+![](documents/logfolder.png)
+
+Each .LOG file is inspected carefully to identify bugs/miscalculations.<br>
+For **math.h** functions this is a challenging task, because the results of floating point calculations
+my differ in the lower significant bits but are correct anyway.<br>
+
+compares the results of all implemented functions with the results of the original Microsoft C Runtime Library.<br>
 
 
 ## Coming up soon...
