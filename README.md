@@ -15,11 +15,15 @@
 * [Hardware conditions](README.md#Hardware-conditions)
 * [Software conditions](README.md#Sofware-conditions)
     * [Floating point models: `precise`, `fast`, `strict`](README.md#floating-point-models-precise-fast-strict)
-    * [Passing floating‑point parameters and returning results](README.md#Passing-floating‑point-parameters-and-returning-results)
-    * [8087 FPU LOAD/STORE instructions](README.md#8087-FPU-LOAD-STORE-instructions)
-    * [The Precision Tradeoff](README.md#The-Precision-Tradeoff)
-    * [Demonstrating `sin()`](README.md#Demonstrating `sin()`)
-    * [8087 FPU LOAD/STORE instructions](README.md#8087-FPU-LOAD-STORE-instructions)
+    * [Passing floating‑point parameters and returning results](README.md#passing-floatingpoint-parameters-and-returning-results)
+    * [8087 FPU LOAD/STORE instructions](README.md#8087-fpu-loadstore-instructions)
+    * [The Precision Tradeoff](README.md#the-precision-tradeoff)
+    * [Demonstrating `sin()`](README.md#demonstrating-sin)
+* [Configure Visual Studio](README.md#configure-visual-studio)
+* [Validation: toroCVS — toro C Library Validation Suite](README.md#validation-torocvs--toro-c-library-validation-suite)
+    * [Basic concept](README.md#basic-concept)
+    * [Example: sin() validation](README.md#example-sin-validation)
+* [Testresults: math.h](README.md#testresults-mathh)
 
 # Preface
 The **UEFI C Library**  discussed here is the [**toro C Library**](https://github.com/KilianKegel/toro-C-Library), [source code](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI). 
