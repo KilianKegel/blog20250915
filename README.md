@@ -253,7 +253,7 @@ In 64Bit code the first parameter is passed in **XMM0**, the second in **XMM1** 
 ### 8087 FPU LOAD/STORE instructions 
 The 8087 I/O interface is based on a set of [**LOAD**](https://www.felixcloutier.com/x86/fst:fstp) and [**STORE**](https://www.felixcloutier.com/x86/fst:fstp)
 instructions to transfer data between memory and the FPU register stack.<br>
-There is no direct register-to-register transfer instruction.<br>
+There is no direct FPU-register-to-CPU-register transfer instruction.<br>
 
 That means when parameters/results are passed/returned via XMM registers, the data must be transferred between XMM and FPU registers via memory.<br>
 
@@ -376,8 +376,12 @@ The test is executed on both:<br>
 Each .LOG file is inspected carefully to identify bugs/miscalculations.<br>
 For **math.h** functions this is a challenging task, because the results of floating point calculations
 my differ in the lower significant bits but are correct anyway.<br>
+It is really hard to identify true miscalculations in millions of trace lines with about one million non-relevant differences.<br>
 
-compares the results of all implemented functions with the results of the original Microsoft C Runtime Library.<br>
+These natural differences arise because the respective libraries use different arithmetic units: the **8087 FPU** vs. the **SSE unit**.<br>
+e.g. for the **`pow()`** function
+![](documents/powdiff2.png)
+
 
 
 ## Coming up soon...
