@@ -363,7 +363,7 @@ So that each file is employed in build in its respective mode:<br>
 
 ![](documents/toroCVS.png)
 ### Basic concept 
-**toro C Library** is validated against the original **Microsoft C  Library** in **Visual Studio 2022** — **Microsoft C  Library** is the reference.<br>
+**toro C Library** is validated against the original **Microsoft C  Library** in **Visual Studio 2022** — **Microsoft C  Library** is the reference implementation.<br>
 **toro C Library** is actually a submodule of the **toroCVS**-superproject. Each **toro C Library**-function has a
 corresponding test module in **toroCVS**.<br>
 Because processing speed and storage capacity of current PCs are high, the test suite usually simply uses a kind of brute force strategy for validation.<br>
@@ -386,32 +386,6 @@ It is really hard to identify true miscalculations in millions of trace lines wi
 These natural differences arise because the respective libraries use different arithmetic units: the **8087 FPU** vs. the **SSE unit**. 
 e.g. for the **`pow()`** function
 ![](documents/powdiff2.png)
-
-The test results of all **math.h** functions can be found here:<br>
-(to keep diff file size small, only 15 lines around diffences are shown)<br>
-* [**acos()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/acos.html)<br>
-* [**asin()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/asin.html)<br>
-* [**atan()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/atan.html)<br>
-* [**atan2()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/atan2.html)<br>
-* [**ceil()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/ceil.html)<br>
-* [**cos()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/cos.html)<br>
-* [**cosh()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/cosh.html)<br>
-* [**exp()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/exp.html)<br>
-* [**fabs()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/fabs.html)<br>
-* [**floor()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/floor.html)<br>
-* [**fmod()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/fmod.html)<br>
-* [**frexp()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/frexp.html)<br>
-* [**ldexp()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/ldexp.html)<br>
-* [**log()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/log.html)<br>
-* [**log10()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/log10.html)<br>
-* [**modf()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/modf.html)<br>
-* [**pow()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/pow.html)<br>
-* [**sin()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/sin.html)<br>
-* [**sinh()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/sinh.html)<br>
-* [**sqrt()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/sqrt.html)<br>
-* [**tan()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/tan.html)<br>
-* [**tanh()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/tanh.html)<br>
-
 ### Example: `sin()` validation
 The test module core for the **`sin()`** function is given below:<br>
 ```c
@@ -469,24 +443,34 @@ for (uint64_t s = 0; s <= 1; s++)                                               
     .
     .
 ```
+
+# Testresults: ***math.h***
+The test results of all **math.h** functions can be found here:<br>
+(to keep diff file size small, only 15 lines around diffences are shown)<br>
+* [**acos()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/acos.html)<br>
+* [**asin()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/asin.html)<br>
+* [**atan()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/atan.html)<br>
+* [**atan2()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/atan2.html)<br>
+* [**ceil()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/ceil.html)<br>
+* [**cos()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/cos.html)<br>
+* [**cosh()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/cosh.html)<br>
+* [**exp()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/exp.html)<br>
+* [**fabs()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/fabs.html)<br>
+* [**floor()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/floor.html)<br>
+* [**fmod()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/fmod.html)<br>
+* [**frexp()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/frexp.html)<br>
+* [**ldexp()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/ldexp.html)<br>
+* [**log()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/log.html)<br>
+* [**log10()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/log10.html)<br>
+* [**modf()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/modf.html)<br>
+* [**pow()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/pow.html)<br>
+* [**sin()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/sin.html)<br>
+* [**sinh()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/sinh.html)<br>
+* [**sqrt()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/sqrt.html)<br>
+* [**tan()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/tan.html)<br>
+* [**tanh()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/tanh.html)<br>
+
 ### Summary
 
-## Coming up soon...
-<del>2021-11-28:<br>                                                </del>      
-<del>* Using UEFI- and Standard-C-API in shell applications<br>     </del>
-<del>* Creating MSDOS tools.<br>                                    </del>
-<del>2021-12-12:<br>                                                </del>
-<del>* Adopting open source Visual-Studio projects to UEFI<br>      </del>
-<del>* Introduction of the ACPCIA port to UEFI<br>                  </del>
-
-<ins>**2021-12-19:**</ins>
-* Redfish on CdePkg<br>
-
-<ins>**2022-01-16:**</ins>
-* Adopting open source Visual-Studio projects to UEFI<br>
-* Introduction of the ACPCIA port to UEFI<br>
-
-<ins>**2022-01-30:**</ins>
-* Introduction of how to calibrate a TSC-based software timer - on IBM-AT compatible UEFI platforms
 
 
