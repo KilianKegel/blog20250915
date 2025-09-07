@@ -269,19 +269,19 @@ The implemented sine  **`sin()`** function is here:<br>
 [05]        do 
 [06]        {
 [07]    
-[08]            if (d.member.exp == 0x7FF)
+[08]            if (d.member.exp == 0x7FF)                                  // check for NaN or INF
 [09]            {
 [10]                dRet.uint64 = 0x0008000000000000ULL | d.uint64;
 [11]    
 [12]                if (0ULL == d.member.mant)
 [13]                    dRet.uint64 = 0x8008000000000000ULL | d.uint64,
-[14]                    errno = EDOM;
+[14]                    errno = EDOM;                                       // set errno to EDOM for sin(NaN)=NaN and sin(INF)=NaN
 [15]    
 [16]                break;
 [17]            }
 [18]    
 [19]            if ((63 + 1023) > d.member.exp)
-[20]                dRet.dbl = __cde80387FSIN(x);
+[20]                dRet.dbl = __cde80387FSIN(x);                           // invoke 80387 FSIN instruction 
 [21]            else
 [22]                errno = ERANGE;
 [23]    
