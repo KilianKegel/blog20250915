@@ -101,7 +101,7 @@ and to stop the chaos of incompatible floating point implementations.
 The upcoming [**8087**](https://en.wikipedia.org/wiki/X87#8087) was designed to provide the **entire floating‑point library** on a single chip:
 * Floating‑point algebraic functions: **addition, subtraction, multiplication, division, and square root**
 * Floating‑point transcendental functions: **logarithm, exponential, tangent, arctangent** <br>
-  Note: Sine, cosine, and related inverse trigonometric functions became directly available with the **80387**.  
+  NOTE: Sine, cosine, and related inverse trigonometric functions became directly available with the **80387**.  
   Before that, these functions were derived from tangent and arctangent.
 * Floating‑point constants: **0.0, 1.0, log<sub>2</sub>(e), log<sub>2</sub>(10), log<sub>10</sub>(2), log<sub>e</sub>(2), π**
 * **64‑bit** integer and packed BCD arithmetic
@@ -117,7 +117,7 @@ entered the market later, as process technology enabled approximately 160,000 tr
 
 ### The Intel 8087, the Intel 80387 and the IEEE 754 Standard
 The Intel 8087, introduced in 1980, was the first **FPU** designed to work with the 
-Intel 8086 and 8088 microprocessors. 
+Intel **8086** and **8088** microprocessors. 
 
 While the **8087** was not fully compliant with the later [**IEEE 754 standard**](https://de.wikipedia.org/wiki/IEEE_754),
 it laid the groundwork for future floating-point units. 
@@ -151,7 +151,7 @@ is done using the latest [**Visual Studio**](https://visualstudio.microsoft.com/
 **Visual Studio** allows to achieve programmers intention instantly.<br>
 
 
-The Microsoft C/C++ compiler offers 3 different floating point models in both the 32- and 64-bit codegenerator :<br>
+The Microsoft C/C++ compiler offers 3 different **floating point models** in both the 32- and 64-bit codegenerator :<br>
 * **precise**
 * **fast**
 * **strict**
@@ -297,11 +297,11 @@ After testing parameters for number range and validity (NaN, INF) the actual sin
 ```asm
 [00]    __cde80387FSIN proc C public float64:QWORD
 [01]    
-[02]        fld float64     ; load parameter x from stack into ST(0)
+[02]        fld float64                                                     ; load parameter x from stack into ST(0)
 [03]    
-[04]        FSIN            ; calculate sine of ST(0), result is returned in ST(0)
+[04]        FSIN                                                            ; calculate sine of ST(0), result is returned in ST(0)
 [05]    
-[06]        ret
+[06]        ret                                                             ; result is returned in ST(0)
 [07]    
 [08]    __cde80387FSIN endp
 ```
@@ -311,15 +311,15 @@ After testing parameters for number range and validity (NaN, INF) the actual sin
 [01]    
 [02]        local float64:QWORD
 [03]    
-[04]        movsd float64,xmm0
+[04]        movsd float64,xmm0                                              ; move parameter x from xmm0 into memory
 [05]    
-[06]        fld float64
+[06]        fld float64                                                     ; load parameter x from memory into ST(0)
 [07]    
-[08]        FSIN
+[08]        FSIN                                                            ; calculate sine of ST(0), result is returned in ST(0)
 [09]    
-[10]        fstp float64
+[10]        fstp float64                                                    ; store result from ST(0) into memory
 [11]    
-[12]        movsd xmm0,float64
+[12]        movsd xmm0,float64                                              ; move result from memory into xmm0
 [13]    
 [14]        ret
 [15]    
