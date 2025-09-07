@@ -10,29 +10,11 @@
 * [Preface](README.md#Preface)
 * [Abstract](README.md#Abstract)
 * [Introduction](README.md#Introduction)
-* [In a nutshell: **CdePkg**](README.md#in-a-nutshell-cdepkg)
-    * [A short comparison with RedfishCrtLib](README.md#a-short-comparison-with-redfishcrtlib)
-    * [RedfishCrtLib conflicts with CdePkg by design](README.md#redfishcrtlib-conflicts-with-cdepkg-by-design)
-* [Transformation of a traditional UEFI DXE driver to CdePkg driver](README.md#transformation-of-a-traditional-uefi-dxe-driver-to-cdepkg-driver)
-    * [Adjusting the .INF file to run CdePkg features](README.md#adjusting-the-inf-file-to-run-cdepkg-features)
-    * [Adjusting the ENTRY_POINT-.C file to run CdePkg features](README.md#adjusting-the-entry_point-c-file-to-run-cdepkg-features)
-    * [Adding a command line (EmulatorPkg)](README.md#adding-a-command-line-emulatorpkg)
-    * [Adding a command line on a real platform](README.md#adding-a-command-line-on-a-real-platform)
-* [Perform Standard C in RestJsonStructureDxe.c in the Emulator](README.md#perform-standard-c-in-restjsonstructuredxec-in-the-emulator)
-    * [`wctype.h` demonstration](README.md#wctypeh-demonstration)
-    * [`wchar.h` demonstration](README.md#wcharh-demonstration)
-* [CDETRACE() -- An introduction of a new DEBUG/TRACE concept for UEFI platforms](README.md#cdetrace----an-introduction-of-a-new-debugtrace-concept-for-uefi-platforms)
-    * [tianocore `DEBUG()`](README.md#cdetrace----an-introduction-of-a-new-debugtrace-concept-for-uefi-platforms)
-    * [`CDETRACE()`](README.md#cdetrace)
-* [Coming up soon](README.md#coming-up-soon)
+    * [Retrospective](README.md#Retrospective)
+* [Library requirements](README.md#Library-requirements)
+* [Introduction](README.md#Introduction)
+* [Introduction](README.md#Introduction)
 
-## introductory email
-From: Kilian Kegel <
-Lets celebrate the 45th anniversary of the [**Intel 8087 FPU**](https://en.wikipedia.org/wiki/X87#8087) (floating point unit) and the 40th anniversary of the
-[**IEEE 754**](https://de.wikipedia.org/wiki/IEEE_754) floating point standard.
-
-The successor to this revolutionary digital circuitry design was the [**Intel 80387 FPU**](https://en.wikipedia.org/wiki/X87#80387) , 
-that is still present in current x86 CPU processors.
 
 # Preface
 The **UEFI C Library**  discussed here is the [**toro C Library**](https://github.com/KilianKegel/toro-C-Library), [source code](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI). 
