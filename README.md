@@ -258,14 +258,14 @@ There is no direct FPU-register-to-CPU-register transfer instruction.<br>
 That means when parameters/results are passed/returned via XMM registers, the data must be transferred between XMM and FPU registers via memory.<br>
 
 ### The Precision Tradeoff
-**SSE2** instructions are used to transfer data between XMM registers and memory.<br>
 To simplify  program flow and use of built-in floating point compiler capabilities,
-pre- and postprocessing of **8087** **FPU** parameters/results are done in C language.<br>
+pre- and postprocessing of **8087** **FPU** parameters/results are done in high-level language.<br>
 
-To implement math.h functions to run entirely inside **8087** (internally in 80Bit precision) would allow
-higher precision and faster processing, but would require much more time to implement and validate.
+To implement **math.h** functions to run entirely inside **8087** (internally in 80Bit precision) would allow
+higher precision and faster processing, but would require much more time to implement and validate.<br>
+Therefore this approach was rejected and a mixed **8087 FPU**/**SSE unit** 64Bit implementation was chosen.<br>
 
-### Demonstrating sin()
+### Demonstrating `sin()`
 The implemented sine  **`sin()`** function is here:<br>
 ```c
 [00]    double __cdecl sin(double x)
@@ -358,11 +358,16 @@ So that each file is employed in build in its respective mode:<br>
 #### 64Bit mode:
 ![](documents/VS202264.png)
 
-# Validating: toroCVS — toro C Library Validation Suite
-**toroCVS** is proprietary test suite to validate the **toro C Library**.<br>
-![](documents/toroCVS.png)
+# Validation: toroCVS — toro C Library Validation Suite
+**toroCVS** is a proprietary test suite to validate the **toro C Library**.<br>
 
-**toro C Library** is validated against the original **Microsoft C Runtime Library** in **Visual Studio 2022**.<br>
+![](documents/toroCVS.png)
+### Basic concept 
+**toro C Library** is validated against the original **Microsoft C  Library** in **Visual Studio 2022** — **Microsoft C  Library** is the reference.<br>
+**toro C Library** is actually a submodule of the **toroCVS**-superproject. Each **toro C Library**-function has a
+corresponding test module in **toroCVS**.<br>
+Because processing speed and storage capacity of current PCs are high, the test suite usually simply uses a kind of brute force strategy for validation.<br>
+
 The test suite generates the required test parameters, invokes the **DUT** (*device under test* – math.h function) with these parameters an
 reports the results to a .LOG file in the build folder.<br>
 
@@ -383,6 +388,7 @@ e.g. for the **`pow()`** function
 ![](documents/powdiff2.png)
 
 The test results of all **math.h** functions can be found here:<br>
+(to keep diff file size small, only 15 lines around diffences are shown)<br>
 * [**acos()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/acos.html)<br>
 * [**asin()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/asin.html)<br>
 * [**atan()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/atan.html)<br>
@@ -406,6 +412,64 @@ The test results of all **math.h** functions can be found here:<br>
 * [**tan()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/tan.html)<br>
 * [**tanh()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/tanh.html)<br>
 
+### Example: `sin()` validation
+The test module core for the **`sin()`** function is given below:<br>
+```c
+    .
+    .
+    .
+for (uint64_t s = 0; s <= 1; s++)                                                       // sign +,-
+{
+    d.member.sign = s;
+    for (size_t E = 0; E <= 0x43F; E++)                                                 // exponent 0..1087
+    {
+        d.member.exp = E;
+        for (add = 1, sftM = 0, mant = (1ULL << sftM); sftM < 52; sftM += add++)        // bit shifted through mantissa
+        {
+
+            if (add == 10)
+                add = 6;
+            mant = (1ULL << sftM);
+            //
+            // fill mantpat with all possible mantissa patterns below
+            //
+            num = -1;
+            mantpat[++num] = mant - 1;                              // 2->1, 4->3, 8->7, 16->0xF, 32->0x1F, 
+                                                                    //  64->0x3F, 128->0x7F, 256->0xFF, 512->0x1FF
+            mantpat[++num] = mant;                                  // 2->2, 4->4, 8->8, 16->16, 32->32, 64->64, 128->128, 256->256, 512->512                    
+            mantpat[++num] = (mant - 1) & 0x0005555555555555ULL;    // pattern 010101...
+            mantpat[++num] = (mant - 1) & 0x000AAAAAAAAAAAAAULL;    // pattern 101010...
+            mantpat[++num] = ~(mant - 1);                           // 2->0xFFFFFFFFFFFFFFFE, 4->0xFFFFFFFFFFFFFFFC, 8->0xFFFFFFFFFFFFFFF8
+            mantpat[++num] = ~(mant - 1) & 0x0005555555555555ULL;   // pattern 101010...
+            mantpat[++num] = ~(mant - 1) & 0x000AAAAAAAAAAAAAULL;   // pattern 010101...
+            mantpat[++num] = ~mant;                                 // 2->0xFFFFFFFFFFFFFFFD, 4->0xFFFFFFFFFFFFFFFB, 8->0xFFFFFFFFFFFFFFF7
+            mantpat[++num] = ~mant & 0x0005555555555555ULL;         // pattern 101010...
+            mantpat[++num] = ~mant & 0x000AAAAAAAAAAAAAULL;         // pattern 010101...
+            if (51 == sftM)                                         // last run, fill up with some more patterns
+                mantpat[++num] = mant;
+
+
+            for (int i = 0; i <= num; i++)                          // loop for all patterns
+            {
+                d.member.mant = mantpat[i];                         // set mantissa pattern
+
+                errno = 0;                                          // clear errno before call
+
+                r.dbl = sin(d.dbl);                                 // call DUT()
+                overallsamples++;
+                if (0 != iFullLog || r.uint64 != o.uint64)
+                    printf("%6d: sin(0x%016llX) -> 0x%016llX errno %d\n", ++line, d.uint64, r.uint64, errno),
+                        loggedsamples++;
+                o = r;
+            }
+        }
+    }
+}
+    .
+    .
+    .
+```
+### Summary
 
 ## Coming up soon...
 <del>2021-11-28:<br>                                                </del>      
