@@ -12,9 +12,14 @@
 * [Introduction](README.md#Introduction)
     * [Retrospective](README.md#Retrospective)
 * [Library requirements](README.md#Library-requirements)
-* [Introduction](README.md#Introduction)
-* [Introduction](README.md#Introduction)
-
+* [Hardware conditions](README.md#Hardware-conditions)
+* [Software conditions](README.md#Sofware-conditions)
+    * [Floating point models: `precise`, `fast`, `strict`](README.md#floating-point-models-precise-fast-strict)
+    * [Passing floating‑point parameters and returning results](README.md#Passing-floating‑point-parameters-and-returning-results)
+    * [8087 FPU LOAD/STORE instructions](README.md#8087-FPU-LOAD-STORE-instructions)
+    * [The Precision Tradeoff](README.md#The-Precision-Tradeoff)
+    * [Demonstrating `sin()`](README.md#Demonstrating `sin()`)
+    * [8087 FPU LOAD/STORE instructions](README.md#8087-FPU-LOAD-STORE-instructions)
 
 # Preface
 The **UEFI C Library**  discussed here is the [**toro C Library**](https://github.com/KilianKegel/toro-C-Library), [source code](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI). 
@@ -126,7 +131,6 @@ the **SSE2** instruction set as a minimum.<br>
 Access to the **80387** and the **SSE** arithmetic unit is possible in all CPU modes and privilege levels.<br>
 
 ## Software conditions
-#### Getting finished . . .
 The entire design and development of the [**toro C Library**](https://github.com/KilianKegel/toro-C-Library)
 is done using the latest [**Visual Studio**](https://visualstudio.microsoft.com/vs/) [standard installation for C/C++](https://github.com/KilianKegel/Howto-setup-a-UEFI-Development-PC?tab=readme-ov-file#install-visual-studio-2022).<br>
 **Visual Studio** provides a complete and robust C/C++ development environment that offers best build performance and debugging features . . .<br>
