@@ -1,7 +1,7 @@
 # Engineering the UEFI C Library
 ### CdePkgBlog 2025-09-15
 
-# ***Part 1: MATH.H***
+# ***Part 1: math.h***
 
 [<img src="https://upload.wikimedia.org/wikipedia/commons/1/14/Intel_C8087.jpg" width="800">](https://upload.wikimedia.org/wikipedia/commons/a/aa/Intel_8087_die.JPG)<br><br>
 [<img src="https://github.com/KilianKegel/pictures/blob/master/IEEEMilestone.png" width="800">](https://math.berkeley.edu/news/congratulations-professor-william-velvel-kahan)
@@ -26,18 +26,33 @@
     * [`CDETRACE()`](README.md#cdetrace)
 * [Coming up soon](README.md#coming-up-soon)
 
-## Preface
+## introductory email
+From: Kilian Kegel <
 Lets celebrate the 45th anniversary of the [**Intel 8087 FPU**](https://en.wikipedia.org/wiki/X87#8087) (floating point unit) and the 40th anniversary of the
 [**IEEE 754**](https://de.wikipedia.org/wiki/IEEE_754) floating point standard.
 
-The successor to this revolutionary digital circuitry design was the [**Intel 80387**](https://en.wikipedia.org/wiki/X87#80387) math coprocessor, 
+The successor to this revolutionary digital circuitry design was the [**Intel 80387 FPU**](https://en.wikipedia.org/wiki/X87#80387) , 
 that is still present in current x86 CPU processors.
 
+## Preface
+The **UEFI C Library**  discussed here is the [**toro C Library**](https://github.com/KilianKegel/toro-C-Library), [source code](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI). 
+
+**toro C Library** is a *monolithic* Standard C Library for the UEFI x86-64 
+target platform.
+
+The **toro C Library** is implemented to target [**ANSI/ISO C Standard Library**]( https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf#page=176) compatibility,
+enabling the creation of applications and drivers for UEFI systems using the design and debugging 
+infrastructure provided by current **Microsoft C tool chain** in **Visual Studio 2022**.
+
+To implement the [**math.h** functions](https://www.open-std.org/JTC1/SC22/WG14/www/docs/n1256.pdf#page=224) the **80387** **FPU** is used.<br>
+That allows compact and precise implementation also for **POST** (power on self test) usage.
+
+#### Getting finished ...
 
 ## Abstract
 This article introduces a high precision, high performance and low code size [**`math.h`**](https://www.open-std.org/JTC1/SC22/WG14/www/docs/n1256.pdf#page=224) implementation for UEFI drivers, UEFI shell applications and Windows applications on x86 platforms.
 It discusses the  design decisions, trade-offs and  describes the validation concept.
-Additionally a very short retrospective of floating point calculation is given.
+Additionally a short retrospective of floating point calculation is given.
 
 ## Introduction
 The **FPU** is the foundation of this math library, providing a space-optimized, 
@@ -57,14 +72,14 @@ The **80387** processor has various improvements over its **8087** predecessor, 
     |FPATAN        | Partial arctangent            |
     |F2XM1         | 2<sup>x</sup> - 1             |
     |FYL2X         | Y * log<sub>2</sub>X          |
-    |FYL2XP1       |Y * log<sub>2</sub>(X + 1)     |
+    |FYL2XP1       | Y * log<sub>2</sub>(X + 1)    |
     
 * new instructions, e.g.
 
-    | Instruction  | function                 |
-    |--------------|--------------------------|
-    |FSIN          | sine                     |
-    |FCOS          | cosine                   |
+    | Instruction  | function                      |
+    |--------------|-------------------------------|
+    |FSIN          | sine                          |
+    |FCOS          | cosine                        |
 
 This **FPU** is still today the most precise arithmetic unit in the x86 processor — because it uses 80-bit floating point arithmetic internally.<br>
 Additionally it provides on current x86-64 processors a complete set of transcendental functions: **logarithm**, **exponential function**, **sine**, **cosine**, **tangent** and  the corresponding **arcus**-functions, .<br>
@@ -90,25 +105,26 @@ The upcoming [**8087**]() would provide the **entire floating point library** in
 * floating point constants
 * 64 bit integer and packed BCD arithmetic
 
-That time the semiconductor technology at **Intel** was able to produce chips with approximately 40.000 transistors.<br>
+That time the semiconductor technology at **Intel** was able to produce chips with approximately 40,000 transistors.<br>
 The limitation required a very *efficient design* of the **FPU** interface and architecture, 
 that was challenging for programmers and compiler writers  :<br>
 * [**On the Advantages of the 8087’s Stack**](documents/87STACK.pdf)
 * [**How Intel 80x87 Stack Over/Underflow Should Have Been Handled**](documents/STACK87.pdf)
 
-NOTE: Concurrent FPU designs ([**Motorola 68881**](https://en.wikipedia.org/wiki/Motorola_68881)) appeared later on the
-market with the availability of about 160.000 transistors and a more elegant architecture and interface design.<br>
+NOTE: Competing FPU designs, such as the [**Motorola 68881**](https://en.wikipedia.org/wiki/Motorola_68881), 
+entered the market later, as process technology enabled approximately 160,000 transistors, offering an easier-to-use architecture and interface.
 
 ### The Intel 8087, the Intel 80387 and the IEEE 754 Standard
 The Intel 8087, introduced in 1980, was the first **FPU** designed to work with the 
 Intel 8086 and 8088 microprocessors. 
 
-While the **8087** was not fully compliant with the later IEEE 754 standard, it laid the groundwork for future floating-point units. 
+While the **8087** was not fully compliant with the later [**IEEE 754 standard**](https://de.wikipedia.org/wiki/IEEE_754),
+it laid the groundwork for future floating-point units. 
 
 In 1985, Intel released the **80387**, which was designed to be fully compliant 
 with the [**IEEE 754 standard**](https://de.wikipedia.org/wiki/IEEE_754), that was finalized in the same year.<br>
 
-## Hardware/Software conditions — library requirements
+## Hardware/Software conditions — Library requirements
 ### Library requirements
 The UEFI C Library ([**toro C Library**](https://github.com/KilianKegel/toro-C-Library)) runs on x86-64 platforms
 during **POST** in **PEI-**, **DXE-**, **SMM-drivers**, in **UEFI Shell apps** and in **Windows 64/32 console apps**.<br>
@@ -120,16 +136,93 @@ during **POST** in **PEI-**, **DXE-**, **SMM-drivers**, in **UEFI Shell apps** a
 **`sinh()`**, **`sqrt()`**, **`tan()`**, **`tanh()`**<br>
 
 
-
-
 ### Hardware conditions
 All UEFI-enabled x86-64 platforms provide the **80387** **FPU** and
 the **SSE2** instruction set as a minimum.<br>
 
-Access to the **80387** register stack is possible in all CPU modes and privilege levels.<br>
-That's true for **SSEx** instructions, too.<br>
+Access to the **80387** and the **SSE** arithmetic unit is possible in all CPU modes and privilege levels.<br>
 
 ### Software conditions
+#### Getting finished . . .
+The entire and design and development of the [**toro C Library**](https://github.com/KilianKegel/toro-C-Library)
+is done using the latest [**Visual Studio**](https://visualstudio.microsoft.com/vs/) [standard installation for C/C++](https://github.com/KilianKegel/Howto-setup-a-UEFI-Development-PC?tab=readme-ov-file#install-visual-studio-2022).<br>
+**Visual Studio** provides a complete and robust C/C++ development environment that offers best build performance and debugging features . . .<br>
+
+
+The Microsoft C/C++ compiler offers 3 different floating point models in both the 32- and 64-bit codegenerator :<br>
+* **precise**
+* **fast**
+* **strict**
+
+To unveil the secrets beyond these models, a little test program was in charge, that simply invokes the **`tan()`** function:<br>
+```c
+#include <stdlib.h>
+#include <math.h>
+
+void main(int argc) 
+{
+    volatile double d = tan(argc);
+}
+```
+#### 32Bit  machine code model `precise`:
+```asm
+_main:
+  00000000: 55                 push        ebp
+  00000001: 8B EC              mov         ebp,esp
+  00000003: 83 EC 08           sub         esp,8
+  00000006: 66 0F 6E 45 08     movd        xmm0,dword ptr [ebp+8]       ; load integer parameter argc into xmm0
+  0000000B: F3 0F E6 C0        cvtdq2pd    xmm0,xmm0                    ; CVTDQ2PD — Convert Packed Doubleword Integers to Packed 
+                                                                        ;            Double Precision Floating-PointValues
+  0000000F: E8 00 00 00 00     call        __libm_sse2_tan_precise      ; invoke tan() with parameter in xmm0
+                                                                        ; NOTE: __libm_sse2_tan_precise is the function name generated
+                                                                        ; by the Microsoft C/C++ compiler in PRECISE mode
+  00000014: F2 0F 11 45 F8     movsd       mmword ptr [ebp-8],xmm0      ; result is returned in xmm0 and stored in the local variable d
+  00000019: 33 C0              xor         eax,eax
+  0000001B: 8B E5              mov         esp,ebp
+  0000001D: 5D                 pop         ebp
+  0000001E: C3                 ret
+```
+#### 32Bit  machine code model `strict`:
+```asm
+_main:
+  00000000: 55                 push        ebp
+  00000001: 8B EC              mov         ebp,esp
+  00000003: 83 EC 08           sub         esp,8
+  00000006: 66 0F 6E 45 08     movd        xmm0,dword ptr [ebp+8]       ; load integer parameter argc into xmm0
+  0000000B: 83 EC 08           sub         esp,8
+  0000000B: F3 0F E6 C0        cvtdq2pd    xmm0,xmm0                    ; CVTDQ2PD — Convert Packed Doubleword Integers to Packed 
+                                                                        ;            Double Precision Floating-PointValues
+  00000012: F2 0F 11 04 24     movsd       mmword ptr [esp],xmm0        ; store parameter on stack
+  00000017: E8 00 00 00 00     call        _tan                         ; invoke tan() with parameter on stack
+                                                                        ; NOTE: _tan is the function name generated in STRICT mode
+  0000001C: 83 C4 08           add         esp,8
+  0000001F: 33 C0              xor         eax,eax
+  00000021: DD 5D F8           fstp        qword ptr [ebp-8]            ; result is returned in ST(0) and stored in the local variable d
+  00000024: 8B E5              mov         esp,ebp
+  00000026: 5D                 pop         ebp
+  00000027: C3                 ret
+```
+
+#### 32Bit  machine code model `fast`:
+```asm
+_main:
+  00000000: 55                 push        ebp
+  00000001: 8B EC              mov         ebp,esp
+  00000003: 83 EC 08           sub         esp,8
+  00000006: 66 0F 6E 45 08     movd        xmm0,dword ptr [ebp+8]       ; load integer parameter argc into xmm0
+  0000000B: F3 0F E6 C0        cvtdq2pd    xmm0,xmm0                    ; CVTDQ2PD — Convert Packed Doubleword Integers to Packed 
+                                                                        ;            Double Precision Floating-PointValues
+  0000000F: E8 00 00 00 00     call        ___libm_sse2_tan             ; invoke tan() with parameter in xmm0
+                                                                        ; NOTE: ___libm_sse2_tan is the function name generated
+                                                                        ; by the Microsoft C/C++ compiler in FAST mode
+  00000014: F2 0F 11 45 F8     movsd       mmword ptr [ebp-8],xmm0      ; result is returned in xmm0 and stored in the local variable d
+  00000019: 33 C0              xor         eax,eax
+  0000001B: 8B E5              mov         esp,ebp
+  0000001D: 5D                 pop         ebp
+  0000001E: C3                 ret
+```
+
+//As [**toro C Library**](https://github.com/KilianKegel/toro-C-Library) is 
 
 
 
