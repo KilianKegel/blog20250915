@@ -101,7 +101,7 @@ and to stop the chaos of incompatible floating point implementations.
 The upcoming [**8087**](https://en.wikipedia.org/wiki/X87#8087) was designed to provide the **entire floating‑point library** on a single chip:
 * Floating‑point algebraic functions: **addition, subtraction, multiplication, division, and square root**
 * Floating‑point transcendental functions: **logarithm, exponential, tangent, arctangent** <br>
-  NOTE: Sine, cosine, and related inverse trigonometric functions became directly available with the **80387**.  
+  NOTE: Sine  and cosine functions became directly available with the **80387**.  
   Before that, these functions were derived from tangent and arctangent.
 * Floating‑point constants: **0.0, 1.0, log<sub>2</sub>(e), log<sub>2</sub>(10), log<sub>10</sub>(2), log<sub>e</sub>(2), π**
 * **64‑bit** integer and packed BCD arithmetic
@@ -148,8 +148,9 @@ Access to the **80387** and the **SSE** arithmetic unit is possible in all CPU m
 The entire design and development of the [**toro C Library**](https://github.com/KilianKegel/toro-C-Library)
 is done using the latest [**Visual Studio**](https://visualstudio.microsoft.com/vs/) [standard installation for C/C++](https://github.com/KilianKegel/Howto-setup-a-UEFI-Development-PC?tab=readme-ov-file#install-visual-studio-2022).<br>
 **Visual Studio** provides a complete and robust C/C++ development environment that offers best build performance and debugging features . . .<br>
-**Visual Studio** allows to achieve programmers intention instantly.<br>
+**Visual Studio** enables developers to achieve their goals quickly.<br>
 
+### Floating point models: `precise`, `fast`, `strict`
 
 The Microsoft C/C++ compiler offers 3 different **floating point models** in both the 32- and 64-bit codegenerator :<br>
 * **precise**
@@ -241,7 +242,14 @@ main:
 
 To allow portability to other compilers too the true function name should be generated and not some compiler-specific alias.<br>
 So it came out, that the **`strict`** model is the best choice for the **toro C Library**, because it generates the true function name
-in 64Bit and 32Bit mode, e.g. **`sin`**.
+in 64Bit and 32Bit mode, e.g. 
+
+### Passing floating‑point parameters and returning results
+**8087** instructions required to implement **ANSI-C** **math.h**  functions return a **double** value and take one or two **double** arguments.<br>
+
+In 32Bit code the parameters are pushed from right to left onto the stack and the result is returned in the **ST(0)** register.<br>
+In 64Bit code the first parameter is passed in **XMM0**, the second in **XMM1** and result is returned in the **XMM0** register.<br>
+
 
 ### 8087 FPU LOAD/STORE instructions 
 The 8087 I/O interface is based on a set of [**LOAD**](https://www.felixcloutier.com/x86/fst:fstp) and [**STORE**](https://www.felixcloutier.com/x86/fst:fstp)
@@ -250,14 +258,13 @@ There is no direct register-to-register transfer instruction.<br>
 
 That means when parameters/results are passed/returned via XMM registers, the data must be transferred between XMM and FPU registers via memory.<br>
 
-### Getting finished . . . The Precision Tradeoff / 
+### The Precision Tradeoff
 **SSE2** instructions are used to transfer data between XMM registers and memory.<br>
 To simplify  program flow and use of built-in floating point compiler capabilities,
 pre- and postprocessing of **8087** **FPU** parameters/results are done in C language.<br>
+
 To implement math.h functions to run entirely inside **8087** (internally in 80Bit precision) would allow
 higher precision and faster processing, but would require much more time to implement and validate.
-
-With the **SSE/8087** mixed approach that task could be finished. . . 
 
 ### Demonstrating sin()
 The implemented sine  **`sin()`** function is here:<br>
@@ -284,14 +291,15 @@ The implemented sine  **`sin()`** function is here:<br>
 [19]            if ((63 + 1023) > d.member.exp)
 [20]                dRet.dbl = __cde80387FSIN(x);                           // invoke 80387 FSIN instruction 
 [21]            else
-[22]                errno = ERANGE;
+[22]                errno = ERANGE;                                         // set errno to ERANGE for |x| > 2^63
 [23]    
 [24]        } while (0);
 [25]    
 [26]        return dRet.dbl;
 [27]    }
 ```
-After testing parameters for number range and validity (NaN, INF) the actual sine calculation is done in line [20] by invoking the helper function **`__cde80387FSIN()`**:<br>
+After testing parameters for number range and validity (NaN, INF) the actual sine calculation is done in line [20] by invoking the wrapper function 
+32Bit [**`__cde80387FSIN()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387FSIN32.asm)/ 64Bit[**`__cde80387FSIN()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387FSIN64.asm):<br>
 
 #### 32Bit machine code :
 ```asm
@@ -325,10 +333,31 @@ After testing parameters for number range and validity (NaN, INF) the actual sin
 [15]    
 [16]    __cde80387FSIN endp
 ```
+## Configure Visual Studio
+With the above insights the Visual Studio project can be configured to implement all required library functions.<br>
 
-//As [**toro C Library**](https://github.com/KilianKegel/toro-C-Library) is 
 
+For all wrapper functions are written in assembly language and must be implemented in both 32Bit and 64Bit mode:<br>
 
+|32Bit|64Bit|
+|-|-|
+|[**`__cde80387FSIN()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387FSIN32.asm)|[**`__cde80387FSIN()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387FSIN64.asm)|
+|[**`__cde80387FCOS()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387FCOS32.asm)|[**`__cde80387FCOS()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387FCOS64.asm)|
+|[**`__cde80387FPTAN()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387FPTAN32.asm)|[**`__cde80387FPTAN()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387FPTAN64.asm)|
+|[**`__cde80387FPATAN()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387FPATAN32.asm)|[**`__cde80387FPATAN()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387FPATAN64.asm)|
+|[**`__cde80387FSQRT()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387FSQRT32.asm)|[**`__cde80387FSQRT()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387FSQRT64.asm)|
+|[**`__cde80387FSCALE()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387FSCALE32.asm)|[**`__cde80387FSCALE()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387FSCALE64.asm)|
+|[**`__cde80387FYL2X()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387FYL2X32.asm)|[**`__cde80387FYL2X()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387FYL2X64.asm)|
+|[**`__cde80387F2XM1()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387F2XM132.asm)|[**`__cde80387F2XM1()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387F2XM164.asm)|
+
+Each function must be added to the project and configured to build for both 32Bit and 64Bit mode in the Property Page:<br>
+![](documents/VS2022Prop32.png)
+
+So that each file is employed in build in its respective mode:<br>
+#### 32Bit mode:
+![](documents/VS202232.png)
+#### 64Bit mode:
+![](documents/VS202264.png)
 
 
 
