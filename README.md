@@ -1,7 +1,7 @@
-[<img src="https://github.com/KilianKegel/pictures/blob/master/IEEEMilestone.png" width="800">](https://math.berkeley.edu/news/congratulations-professor-william-velvel-kahan)
+[<img src="https://github.com/KilianKegel/pictures/blob/master/IEEEMilestone.png" width="800">](https://math.berkeley.edu/news/congratulations-professor-william-velvel-kahan)<br>
 ***"Credit must be given to those people who played key roles in the development of the 8087.<br>
 The 8087 would not have been possible without the clear insight and strong guidance offerred by*** **Prof. W. Kahan** ***at UC Berkeley.<br>
-We did not do as well as he wanted, but we did better than he expected."***
+We did not do as well as he wanted, but we did better than he expected."***<br>
 <sup>[[0]](https://github.com/KilianKegel/4KPages-8087PRIMER/blob/main/images/COVERfront.jpeg)</sup>
 <sup>[[1]](https://github.com/KilianKegel/4KPages-8087PRIMER/blob/main/images/THE8087PRIMER_005.jpg)</sup>
 <sup>[[2]](https://github.com/KilianKegel/4KPages-8087PRIMER/blob/main/images/THE8087PRIMER_006.jpg)</sup>
@@ -10,7 +10,6 @@ We did not do as well as he wanted, but we did better than he expected."***
 [<img src="https://upload.wikimedia.org/wikipedia/commons/1/14/Intel_C8087.jpg" width="800">](https://upload.wikimedia.org/wikipedia/commons/a/aa/Intel_8087_die.JPG)<br><br>
 
 # Engineering the UEFI C Library
-### CdePkgBlog 2025-09-15
 
 # ***Part 1: math.h***
 
@@ -46,11 +45,11 @@ Even today, the **Intel 8087** is the most precise computing unit in x86 process
 This work (software implementation of **Standard C Library math.h** functions) is dedicated to the people who created the **Intel 8087** and the **IEEE 754 Standard**, first of all:<br>
 * **Prof. William Kahan**<br>
 furthermore
-* **Jerome Coonen**
-* **Prof. Harold Stone**
 * **John Palmer** (Intel)
 * **Stephen P. Morse** (Intel)
 * **Rafi Nave** (Intel)
+* **Jerome Coonen**
+* **Prof. Harold Stone**
 
 Without the **Intel 8087**, this task could not have been accomplished.<br>
 
