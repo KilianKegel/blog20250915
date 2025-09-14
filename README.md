@@ -41,7 +41,7 @@ requires advanced mathematical expertise.<br>
 
 Using the mathematical coprocessor (floating point unit, FPU) **Intel 8087** simplifies the task to an engineering level.<br>
 
-Even today, the **Intel 8087** is the most precise computing unit in x86 processors because it provides 80‑bit floating‑point arithmetic.<br>
+Even today, the **Intel 8087** is the most precise computing unit in x86 processors.<br>
 
 This work (software implementation of **Standard C Library math.h** functions) is dedicated to the people who created the **Intel 8087** and the **IEEE 754 Standard**, first of all:<br>
 * **Prof. William Kahan**<br>
@@ -51,6 +51,9 @@ furthermore
 * **John Palmer** (Intel)
 * **Stephen P. Morse** (Intel)
 * **Rafi Nave** (Intel)
+
+Without the **Intel 8087**, this task could not have been accomplished.<br>
+
 
 
 # Abstract
@@ -98,7 +101,7 @@ The **80387** processor has various improvements over its **8087** predecessor, 
     |FCOS          | cosine                        |
 
 This **FPU** is still today the most precise arithmetic unit in the x86 processor — because it uses 80-bit floating point arithmetic internally.<br>
-Additionally it provides on current x86-64 processors a complete set of transcendental functions: **logarithm**, **exponential function**, **sine**, **cosine**, **tangent** and  the corresponding **arcus**-functions, .<br>
+Additionally it provides on current x86-64 processors a complete set of transcendental functions: **logarithm**, **exponential function**, **sine**, **cosine**, **tangent** and the corresponding inverse (arc) functions.<br>
 
 Instead the modern [**SSE instruction set**](https://en.wikipedia.org/wiki/Streaming_SIMD_Extensions) uses only 64-bit double precision floating point arithmetic
 and is not spread internally to higher bit width.<br>
@@ -106,46 +109,46 @@ and is not spread internally to higher bit width.<br>
 Calculation of transcendental functions is not supported directly by the **SSE** instruction set.<br>
 
 ### Retrospective
-Until the 1970s a floating point standard did not exist. Manufacturer of computing systems 
-and programming languages implemented different floating point representation and arithmetic.
-That made it difficult to port software between different systems and to compare results of floating point calculations:<br>
+Until the 1970s a floating‑point standard did not exist. Manufacturers of computing systems 
+and programming languages implemented different floating‑point representations and arithmetic.
+This made it difficult to port software between different systems and to compare the results of floating‑point calculations:<br>
 [YOUTUBE: William Kahan on the 8087 and designing Intel's floating point](https://www.youtube.com/watch?v=L-QVgbdt_qg)
 
-The company [**Intel**](https://en.wikipedia.org/wiki/Intel), founded in 1968, decided to provide a floating point coprocessor (**FPU**) for their new 16-bit microprocessor,
-and to stop the chaos of incompatible floating point implementations.
+The company [**Intel**](https://en.wikipedia.org/wiki/Intel), founded in 1968, decided to provide a floating‑point coprocessor (**FPU**) for its new 16‑bit microprocessors,
+and to end the chaos of incompatible floating‑point implementations.
 
 The upcoming [**8087**](https://en.wikipedia.org/wiki/X87#8087) was designed to provide the **entire floating‑point library** on a single chip:
 * Floating‑point algebraic functions: **addition, subtraction, multiplication, division, and square root**
 * Floating‑point transcendental functions: **logarithm, exponential, tangent, arctangent** <br>
-  NOTE: Sine  and cosine functions became directly available with the **80387**.  
+  NOTE: Sine and cosine functions became directly available with the **80387**.  
   Before that, these functions were derived from tangent and arctangent.
 * Floating‑point constants: **0.0, 1.0, log<sub>2</sub>(e), log<sub>2</sub>(10), log<sub>10</sub>(2), log<sub>e</sub>(2), π**
 * **64‑bit** integer and packed BCD arithmetic
 
-That time the semiconductor technology at **Intel** was able to produce chips with approximately 40,000 transistors.<br>
-The limitation required a very *efficient design* of the **FPU** interface and architecture, 
-that was challenging for programmers and compiler writers  :<br>
+At that time the semiconductor technology at **Intel** was able to produce chips with approximately 40,000 transistors.<br>
+The limitation required a very *efficient design* of the **FPU** interface and architecture,
+which was challenging for programmers and compiler writers:<br>
 * [**On the Advantages of the 8087’s Stack**](documents/87STACK.pdf)
 * [**How Intel 80x87 Stack Over/Underflow Should Have Been Handled**](documents/STACK87.pdf)
 
 NOTE: Competing FPU designs, such as the [**Motorola 68881**](https://en.wikipedia.org/wiki/Motorola_68881), 
-entered the market later, as process technology enabled approximately 160,000 transistors, offering an easier-to-use architecture and interface.
+entered the market later, as process technology enabled approximately 160,000 transistors, offering an easier‑to‑use architecture and interface.
 
 ### The Intel 8087, the Intel 80387 and the IEEE 754 Standard
 The Intel 8087, introduced in 1980, was the first **FPU** designed to work with the 
 Intel **8086** and **8088** microprocessors. 
 
-While the **8087** was not fully compliant with the later [**IEEE 754 standard**](https://de.wikipedia.org/wiki/IEEE_754),
-it laid the groundwork for future floating-point units. 
+While the **8087** was not fully compliant with the later [**IEEE 754 standard**](https://en.wikipedia.org/wiki/IEEE_754),
+it laid the groundwork for future floating‑point units. 
 
 In 1985, Intel released the **80387**, which was designed to be fully compliant 
-with the [**IEEE 754 standard**](https://de.wikipedia.org/wiki/IEEE_754), that was finalized in the same year.<br>
+with the [**IEEE 754 standard**](https://en.wikipedia.org/wiki/IEEE_754), which was finalized in the same year.<br>
 
 # Library requirements
 The UEFI C Library ([**toro C Library**](https://github.com/KilianKegel/toro-C-Library)) runs on x86-64 platforms
 during **POST** in **PEI-**, **DXE-**, **SMM-drivers**, in **UEFI Shell apps** and in **Windows 64/32 console apps**.<br>
 
-**ANSI-C/C90** **`math.h`** functions set requires to provide 22 functions:<br>
+The **ANSI C (C90)** **`math.h`** function set requires 22 functions:<br>
 **`acos()`**, **`asin()`**, **`atan()`**, **`atan2()`**, **`ceil()`**, **`cos()`**,<br>
 **`cosh()`**, **`exp()`**, **`fabs()`**, **`floor()`**, **`fmod()`**, **`frexp()`**, <br>
 **`ldexp()`**, **`log()`**, **`log10()`**, **`modf()`**, **`pow()`**, **`sin()`**, <br>
@@ -162,16 +165,16 @@ Access to the **80387** and the **SSE** arithmetic unit is possible in all CPU m
 ## Software conditions
 The entire design and development of the [**toro C Library**](https://github.com/KilianKegel/toro-C-Library)
 is done using the latest [**Visual Studio**](https://visualstudio.microsoft.com/vs/) [standard installation for C/C++](https://github.com/KilianKegel/Howto-setup-a-UEFI-Development-PC?tab=readme-ov-file#install-visual-studio-2022).<br>
-**Visual Studio** provides a complete and robust C/C++ development environment that offers best build performance and debugging features . . .<br>
+**Visual Studio** provides a complete and robust C/C++ development environment that offers excellent build performance and debugging features.<br>
 **Visual Studio** enables developers to achieve their goals quickly.<br>
 
 ### Floating point models: `precise`, `fast`, `strict`
-The Microsoft C/C++ compiler offers 3 different **floating point models** in both the 32- and 64-bit codegenerator :<br>
+The Microsoft C/C++ compiler offers 3 different **floating point models** in both the 32- and 64-bit code generator:<br>
 * **precise**
 * **fast**
 * **strict**
 
-To unveil the secrets beyond these models, a little test program was in charge, that simply invokes the sine **`sin()`** function:<br>
+To illustrate the differences between these models, a small test program simply calls the sine function **`sin()`**:<br>
 ```c
 #include <stdlib.h>
 #include <math.h>
@@ -189,7 +192,7 @@ _main:
   00000003: 83 EC 08           sub         esp,8
   00000006: 66 0F 6E 45 08     movd        xmm0,dword ptr [ebp+8]       ; load integer parameter argc into xmm0
   0000000B: F3 0F E6 C0        cvtdq2pd    xmm0,xmm0                    ; CVTDQ2PD — Convert Packed Doubleword Integers to Packed 
-                                                                        ;            Double Precision Floating-PointValues
+                                                                        ;            Double Precision Floating-Point Values
   0000000F: E8 00 00 00 00     call        __libm_sse2_sin_precise      ; invoke sin() with parameter in xmm0
                                                                         ; NOTE: __libm_sse2_sin_precise is the function name generated
                                                                         ; by the Microsoft C/C++ compiler in PRECISE mode
@@ -208,7 +211,7 @@ _main:
   00000006: 66 0F 6E 45 08     movd        xmm0,dword ptr [ebp+8]       ; load integer parameter argc into xmm0
   0000000B: 83 EC 08           sub         esp,8
   0000000B: F3 0F E6 C0        cvtdq2pd    xmm0,xmm0                    ; CVTDQ2PD — Convert Packed Doubleword Integers to Packed 
-                                                                        ;            Double Precision Floating-PointValues
+                                                                        ;            Double Precision Floating-Point Values
   00000012: F2 0F 11 04 24     movsd       mmword ptr [esp],xmm0        ; store parameter on stack
   00000017: E8 00 00 00 00     call        _sin                         ; invoke sin() with parameter on stack
                                                                         ; NOTE: _sin is the function name generated in STRICT mode
@@ -228,7 +231,7 @@ _main:
   00000003: 83 EC 08           sub         esp,8
   00000006: 66 0F 6E 45 08     movd        xmm0,dword ptr [ebp+8]       ; load integer parameter argc into xmm0
   0000000B: F3 0F E6 C0        cvtdq2pd    xmm0,xmm0                    ; CVTDQ2PD — Convert Packed Doubleword Integers to Packed
-                                                                        ;            Double Precision Floating-PointValues
+                                                                        ;            Double Precision Floating-Point Values
   0000000F: E8 00 00 00 00     call        ___libm_sse2_sin             ; invoke sin() with parameter in xmm0
                                                                         ; NOTE: ___libm_sse2_sin is the function name generated
                                                                         ; by the Microsoft C/C++ compiler in FAST mode
@@ -239,14 +242,14 @@ _main:
   0000001E: C3                 ret
 ```
 
-#### 64Bit  machine code model `precise`, `strict`and `fast`:
+#### 64Bit  machine code model `precise`, `strict` and `fast`:
 NOTE: In 64Bit mode **`precise`**, **`strict`** and **`fast`** model the parameter is passed in the **XMM0** register and the result is returned in the **XMM0** register.<br>
 ```asm
 main:
   00000000: 48 83 EC 28        sub         rsp,28h
   00000004: 66 0F 6E C1        movd        xmm0,ecx                     ; load integer parameter argc into xmm0
   00000008: f3 0f e6 c0        cvtdq2pd    xmm0,xmm0                    ; CVTDQ2PD — Convert Packed Doubleword Integers to Packed
-                                                                        ;            Double Precision Floating-PointValues
+                                                                        ;            Double Precision Floating-Point Values
   0000000C: E8 00 00 00 00     call        sin                          ; invoke sin() with parameter in xmm0
   00000011: F2 0F 11 44 24 38  movsd       mmword ptr [rsp+38h],xmm0    ; result is returned in xmm0 and stored in the local variable d
   00000017: 33 C0              xor         eax,eax                      ; return code 0 in eax
@@ -255,14 +258,14 @@ main:
 ```
 
 To allow portability to other compilers too the true function name should be generated and not some compiler-specific alias.<br>
-So it came out, that the **`strict`** model is the best choice for the **toro C Library**, because it generates the true function name
-in 64Bit and 32Bit mode, e.g. 
+It turned out that the **`strict`** model is the best choice for the **toro C Library**, because it generates the true function name
+in 64Bit and 32Bit mode.
 
 ### Passing floating‑point parameters and returning results
-**8087** instructions required to implement **ANSI-C** **math.h**  functions return a **double** value and take one or two **double** arguments.<br>
+**8087** instructions required to implement **ANSI-C** **math.h** functions return a **double** value and take one or two **double** arguments.<br>
 
 In 32Bit code the parameters are pushed from right to left onto the stack and the result is returned in the **ST(0)** register.<br>
-In 64Bit code the first parameter is passed in **XMM0**, the second in **XMM1** and result is returned in the **XMM0** register.<br>
+In 64Bit code the first parameter is passed in **XMM0**, the second in **XMM1** and the result is returned in the **XMM0** register.<br>
 
 
 ### 8087 FPU LOAD/STORE instructions 
@@ -313,7 +316,7 @@ The implemented sine  **`sin()`** function is here:<br>
 [27]    }
 ```
 After testing parameters for number range and validity (NaN, INF) the actual sine calculation is done in line [20] by invoking the wrapper function 
-32Bit [**`__cde80387FSIN()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387FSIN32.asm)/ 64Bit[**`__cde80387FSIN()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387FSIN64.asm):<br>
+32Bit [**`__cde80387FSIN()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387FSIN32.asm)/ 64Bit [**`__cde80387FSIN()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387FSIN64.asm):<br>
 
 #### Assembler code for 32Bit interface:
 ```asm
@@ -351,7 +354,7 @@ After testing parameters for number range and validity (NaN, INF) the actual sin
 With the above insights the Visual Studio project can be configured to implement all required library functions.<br>
 
 
-For all wrapper functions are written in assembly language and must be implemented in both 32Bit and 64Bit mode:<br>
+All wrapper functions are written in assembly language and must be implemented in both 32Bit and 64Bit mode:<br>
 
 |32Bit|64Bit|
 |-|-|
@@ -378,28 +381,28 @@ So that each file is employed in build in its respective mode:<br>
 
 ![](documents/toroCVS.png)
 ### Basic concept 
-**toro C Library** is validated against the original **Microsoft C  Library** in **Visual Studio 2022** — **Microsoft C  Library** is the reference implementation.<br>
-**toro C Library** is actually a submodule of the **toroCVS**-superproject. Each **toro C Library**-function has a
+**toro C Library** is validated against the original **Microsoft C Library** in **Visual Studio 2022** — **Microsoft C Library** is the reference implementation.<br>
+**toro C Library** is actually a submodule of the **toroCVS** superproject. Each **toro C Library** function has a
 corresponding test module in **toroCVS**.<br>
-Because processing speed and storage capacity of current PCs are high, the test suite usually simply uses a kind of brute force strategy for validation.<br>
+Because processing speed and storage capacity of current PCs are high, the test suite usually simply uses a kind of brute‑force strategy for validation.<br>
 
-The test suite generates the required test parameters, invokes the **DUT** (*device under test* – math.h function) with these parameters an
-reports the results to a .LOG file in the build folder.<br>
+The test suite generates the required test parameters, invokes the **DUT** (*device under test* – math.h function) with these parameters and
+reports the results in a .LOG file in the build folder.<br>
 
 The test is executed on both:<br>
-* **toro C Library**-linked test-application
-* **Microsoft C Runtime Library**-linked test-application
+* **toro C Library**‑linked test application
+* **Microsoft C Runtime Library**‑linked test application
 
 
 ![](documents/logfolder.png)
 
 Each .LOG file is inspected carefully to identify bugs/miscalculations.<br>
-For **math.h** functions this is a challenging task, because the results of floating point calculations
-my differ in the lower significant bits but are correct anyway.<br>
-It is really hard to identify true miscalculations in millions of trace lines with about one million non-relevant differences.<br>
+For **math.h** functions this is a challenging task, because the results of floating‑point calculations
+may differ in the lower significant bits but are correct anyway.<br>
+It is really hard to identify true miscalculations among millions of trace lines, with about one million non‑relevant differences.<br>
 
-These natural differences arise because the respective libraries use different arithmetic units: the **8087 FPU** vs. the **SSE unit**. 
-e.g. for the **`pow()`** function
+These natural differences arise because the respective libraries use different arithmetic units: the **8087 FPU** vs. the **SSE unit**.
+For example, for the **`pow()`** function:
 ![](documents/powdiff2.png)
 ### Example: `sin()` validation
 The test module core for the **`sin()`** function is given below:<br>
@@ -459,9 +462,9 @@ for (uint64_t s = 0; s <= 1; s++)                                               
     .
 ```
 
-# Testresults: ***math.h***
+# Test results: ***math.h***
 The test results of all **math.h** functions can be found here:<br>
-(to keep diff file size small, only 15 lines around diffences are shown)<br>
+(to keep diff file size small, only 15 lines around differences are shown)<br>
 * [**acos()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/acos.html)<br>
 * [**asin()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/asin.html)<br>
 * [**atan()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/atan.html)<br>
@@ -486,6 +489,8 @@ The test results of all **math.h** functions can be found here:<br>
 * [**tanh()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/tanh.html)<br>
 
 ### Summary
+
+
 
 
 
