@@ -36,6 +36,24 @@ We did not do as well as he wanted, but we did better than he expected."***
 * [Testresults: math.h](README.md#testresults-mathh)
 
 # Preface
+Developing accurate mathematical floating‑point functions is a challenge that usually
+requires advanced mathematical expertise.<br>
+
+Using the mathematical coprocessor (floating point unit, FPU) **Intel 8087** simplifies the task to an engineering level.<br>
+
+Even today, the **Intel 8087** is the most precise computing unit in x86 processors because it provides 80‑bit floating‑point arithmetic.<br>
+
+This work (software implementation of **Standard C Library math.h** functions) is dedicated to the people who created the **Intel 8087** and the **IEEE 754 Standard**, first of all:<br>
+* **Prof. William Kahan**<br>
+furthermore
+* **Jerome Coonen**
+* **Prof. Harold Stone**
+* **John Palmer** (Intel)
+* **Stephen P. Morse** (Intel)
+* **Rafi Nave** (Intel)
+
+
+# Abstract
 The **UEFI C Library**  discussed here is the [**toro C Library**](https://github.com/KilianKegel/toro-C-Library), [source code](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI). 
 
 **toro C Library** is a *monolithic* Standard C Library for the UEFI x86-64 
@@ -48,9 +66,6 @@ infrastructure provided by current **Microsoft C tool chain** in **Visual Studio
 To implement the [**math.h** functions](https://www.open-std.org/JTC1/SC22/WG14/www/docs/n1256.pdf#page=224) the **80387** **FPU** is used.<br>
 That allows compact and precise implementation also for **POST** (power on self test) usage.
 
-#### Getting finished ...
-
-# Abstract
 This article introduces a high precision, high performance and low code size [**`math.h`**](https://www.open-std.org/JTC1/SC22/WG14/www/docs/n1256.pdf#page=224) implementation for UEFI drivers, UEFI shell applications and Windows applications on x86-64 platforms.
 It discusses the  design decisions, tradeoffs and  describes the validation concept.
 Additionally a short retrospective of floating point calculation is given.
@@ -471,6 +486,7 @@ The test results of all **math.h** functions can be found here:<br>
 * [**tanh()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/tanh.html)<br>
 
 ### Summary
+
 
 
 
