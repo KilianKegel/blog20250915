@@ -1,4 +1,4 @@
-[<img src="https://github.com/KilianKegel/pictures/blob/master/IEEEMilestone.png" width="800">](https://math.berkeley.edu/news/congratulations-professor-william-velvel-kahan)<br>
+[<img src="https://github.com/KilianKegel/pictures/blob/master/IEEEMilestone.png" width="800">](https://math.berkeley.edu/news/congratulations-professor-william-velvel-kahan)<br><br>
 ***"Credit must be given to those people who played key roles in the development of the 8087.<br>
 The 8087 would not have been possible without the clear insight and strong guidance offerred by*** **Prof. W. Kahan** ***at UC Berkeley.<br>
 We did not do as well as he wanted, but we did better than he expected."***<br>
