@@ -113,7 +113,7 @@ and programming languages implemented different floating‑point representations
 This made it difficult to port software between different systems and to compare the results of floating‑point calculations:<br>
 * [**Intel and Floating-Point**](https://www.intel.com/content/dam/www/public/us/en/documents/case-studies/floating-point-case-study.pdf)
 * [**YOUTUBE: William Kahan on the 8087 and designing Intel's floating point**](https://www.youtube.com/watch?v=L-QVgbdt_qg)<br>
-* [**An Interview with the Old Man of Floating-Point**](https://people.eecs.berkeley.edu/~wkahan/ieee754status/754story.html
+* [**An Interview with the Old Man of Floating-Point**](https://people.eecs.berkeley.edu/~wkahan/ieee754status/754story.html)
 
 The company [**Intel**](https://en.wikipedia.org/wiki/Intel), founded in 1968, decided to provide a floating‑point coprocessor (**FPU**) for its new 16‑bit microprocessors,
 and to end the chaos of incompatible floating‑point implementations.
