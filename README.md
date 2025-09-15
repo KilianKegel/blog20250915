@@ -385,7 +385,7 @@ So that each file is employed in build in its respective mode:<br>
 ### Basic concept
 **toro C Library** aims to be behaviorally identical to the functions specified by **ANSI C/C89/C90** and **C95**, as implemented by the **Microsoft C Runtime Library** (**LIBCMT.LIB**) provided with **Visual Studio 2026**.<br>
 
-**toro C Library** is validated against the original **Microsoft C Library** in **Visual Studio 2022** — **Microsoft C Library** is the reference implementation.<br>
+**toro C Library** is validated against the original **Microsoft C Library** in **Visual Studio 2026** — **Microsoft C Library** is the reference implementation.<br>
 
 **toro C Library** is actually a submodule of the **toroCVS** superproject. Each **toro C Library** function has a
 corresponding test module in **toroCVS**.<br>
