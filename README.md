@@ -21,17 +21,19 @@ We did not do as well as he wanted, but we did better than he expected."***<br>
 * [Introduction](README.md#Introduction)
     * [Retrospective](README.md#Retrospective)
 * [Library requirements](README.md#Library-requirements)
-* [Hardware conditions](README.md#Hardware-conditions)
-* [Software conditions](README.md#Sofware-conditions)
-    * [Floating point models: `precise`, `fast`, `strict`](README.md#floating-point-models-precise-fast-strict)
-    * [Passing floating‑point parameters and returning results](README.md#passing-floatingpoint-parameters-and-returning-results)
-    * [8087 FPU LOAD/STORE instructions](README.md#8087-fpu-loadstore-instructions)
-    * [The Precision Tradeoff](README.md#the-precision-tradeoff)
-    * [Demonstrating `sin()`](README.md#demonstrating-sin)
+* [Prerequisite Hardware/Software](README.md#Prerequisite-HardwareSoftware)
+    * [Hardware](README.md#Hardware)
+    * [Software](README.md#Sofware)
+        * [Floating point models: `precise`, `fast`, `strict`](README.md#floating-point-models-precise-fast-strict)
+        * [Passing floating‑point parameters and returning results](README.md#passing-floatingpoint-parameters-and-returning-results)
+        * [8087 FPU LOAD/STORE instructions](README.md#8087-fpu-loadstore-instructions)
+        * [The Precision Tradeoff](README.md#the-precision-tradeoff)
+        * [Demonstrating `sin()`](README.md#demonstrating-sin)
 * [Configure Visual Studio](README.md#configure-visual-studio)
 * [Validation: toroCVS — toro C Library Validation Suite](README.md#validation-torocvs--toro-c-library-validation-suite)
     * [Basic concept](README.md#basic-concept)
     * [Example: sin() validation](README.md#example-sin-validation)
+* [Summary](README.md#summary)
 * [Testresults: math.h](README.md#testresults-mathh)
 
 # Preface
@@ -51,21 +53,19 @@ furthermore
 * **Jerome Coonen**
 * **Prof. Harold Stone**
 
-Without the **Intel 8087**, this task could not have been accomplished.<br>
-
-
+Without the **Intel 8087** this task could not have been accomplished.<br>
 
 # Abstract
 The **UEFI C Library**  discussed here is the [**toro C Library**](https://github.com/KilianKegel/toro-C-Library), [source code](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI). 
 
-**toro C Library** is a *monolithic* Standard C Library for the UEFI x86-64 
+**toro C Library** is a *monolithic* Standard C Library for the **UEFI** x86-64 
 target platform.
 
 The **toro C Library** is implemented to target [**ANSI/ISO C Standard Library**]( https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf#page=176) compatibility,
-enabling the creation of applications and drivers for UEFI systems using the design and debugging 
-infrastructure provided by current **Microsoft C tool chain** in **Visual Studio 2022**.
+enabling the creation of applications and drivers for **UEFI** systems using the design and debugging 
+infrastructure provided by current **Microsoft C tool chain** in [**Visual Studio 2026**](https://visualstudio.microsoft.com/insiders/).
 
-To implement the [**math.h** functions](https://www.open-std.org/JTC1/SC22/WG14/www/docs/n1256.pdf#page=224) the **80387** **FPU** is used.<br>
+The implementation of the [**math.h** functions](https://www.open-std.org/JTC1/SC22/WG14/www/docs/n1256.pdf#page=224)  relies on  the extended number range and new instructions of the **Intel 80387 FPU**.<br>
 That allows compact and precise implementation also for **POST** (power on self test) usage.
 
 This article introduces a high precision, high performance and low code size [**`math.h`**](https://www.open-std.org/JTC1/SC22/WG14/www/docs/n1256.pdf#page=224) implementation for UEFI drivers, UEFI shell applications and Windows applications on x86-64 platforms.
@@ -78,7 +78,7 @@ ROM-able implementation of C's MATH.H functions while maintaining the precision 
 already established in earlier x87-based math libraries.<br>
 
 Since the traditional **FPU** **80387** is still present in current x86 processors and is 
-also ***not deprecated*** in the [**X86S specification**](https://www.intel.com/content/www/us/en/developer/articles/technical/envisioning-future-simplified-architecture.html), [**.PDF**](https://github.com/KilianKegel/4KPages-TechDocs/blob/main/x86s-eas-external-1.1.pdf),
+also ***not deprecated*** in the [**X86S specification**](https://www.intel.com/content/www/us/en/developer/articles/technical/envisioning-future-simplified-architecture.html, [**.PDF**](https://github.com/KilianKegel/4KPages-TechDocs/blob/main/x86s-eas-external-1.1.pdf),
 it can be safely used here, now and in the future on x86-based platforms.<br>
 
 The **80387** processor has various improvements over its **8087** predecessor, such as<br>
@@ -100,7 +100,7 @@ The **80387** processor has various improvements over its **8087** predecessor, 
     |FCOS          | cosine                        |
 
 This **FPU** is still today the most precise arithmetic unit in the x86 processor — because it uses 80-bit floating point arithmetic internally.<br>
-Additionally it provides on current x86-64 processors a complete set of transcendental functions: **logarithm**, **exponential function**, **sine**, **cosine**, **tangent** and the corresponding inverse (arc) functions.<br>
+The **FPU** provides a complete set of transcendental functions: **logarithm**, **exponential function**, **sine**, **cosine**, **tangent** and the corresponding inverse (arc) functions.<br>
 
 Instead the modern [**SSE instruction set**](https://en.wikipedia.org/wiki/Streaming_SIMD_Extensions) uses only 64-bit double precision floating point arithmetic
 and is not spread internally to higher bit width.<br>
@@ -111,7 +111,9 @@ Calculation of transcendental functions is not supported directly by the **SSE**
 Until the 1970s a floating‑point standard did not exist. Manufacturers of computing systems 
 and programming languages implemented different floating‑point representations and arithmetic.
 This made it difficult to port software between different systems and to compare the results of floating‑point calculations:<br>
-[YOUTUBE: William Kahan on the 8087 and designing Intel's floating point](https://www.youtube.com/watch?v=L-QVgbdt_qg)
+* [**Intel and Floating-Point**](https://www.intel.com/content/dam/www/public/us/en/documents/case-studies/floating-point-case-study.pdf)
+* [**YOUTUBE: William Kahan on the 8087 and designing Intel's floating point**](https://www.youtube.com/watch?v=L-QVgbdt_qg)<br>
+* [**An Interview with the Old Man of Floating-Point**](https://people.eecs.berkeley.edu/~wkahan/ieee754status/754story.html
 
 The company [**Intel**](https://en.wikipedia.org/wiki/Intel), founded in 1968, decided to provide a floating‑point coprocessor (**FPU**) for its new 16‑bit microprocessors,
 and to end the chaos of incompatible floating‑point implementations.
@@ -123,9 +125,10 @@ The upcoming [**8087**](https://en.wikipedia.org/wiki/X87#8087) was designed to 
   Before that, these functions were derived from tangent and arctangent.
 * Floating‑point constants: **0.0, 1.0, log<sub>2</sub>(e), log<sub>2</sub>(10), log<sub>10</sub>(2), log<sub>e</sub>(2), π**
 * **64‑bit** integer and packed BCD arithmetic
+* correct processing of overflow, underflow (subnormals), rounding and exceptions
 
 At that time the semiconductor technology at **Intel** was able to produce chips with approximately 40,000 transistors.<br>
-The limitation required a very *efficient design* of the **FPU** interface and architecture,
+The limitation required a very *"efficient design"* of the **FPU** interface and architecture,
 which was challenging for programmers and compiler writers:<br>
 * [**On the Advantages of the 8087’s Stack**](documents/87STACK.pdf)
 * [**How Intel 80x87 Stack Over/Underflow Should Have Been Handled**](documents/STACK87.pdf)
@@ -134,7 +137,7 @@ NOTE: Competing FPU designs, such as the [**Motorola 68881**](https://en.wikiped
 entered the market later, as process technology enabled approximately 160,000 transistors, offering an easier‑to‑use architecture and interface.
 
 ### The Intel 8087, the Intel 80387 and the IEEE 754 Standard
-The Intel 8087, introduced in 1980, was the first **FPU** designed to work with the 
+The **Intel 8087**, introduced in 1980, was the first **FPU** designed to work with the 
 Intel **8086** and **8088** microprocessors. 
 
 While the **8087** was not fully compliant with the later [**IEEE 754 standard**](https://en.wikipedia.org/wiki/IEEE_754),
@@ -148,20 +151,20 @@ The UEFI C Library ([**toro C Library**](https://github.com/KilianKegel/toro-C-L
 during **POST** in **PEI-**, **DXE-**, **SMM-drivers**, in **UEFI Shell apps** and in **Windows 64/32 console apps**.<br>
 
 The **ANSI C (C90)** **`math.h`** function set requires 22 functions:<br>
-**`acos()`**, **`asin()`**, **`atan()`**, **`atan2()`**, **`ceil()`**, **`cos()`**,<br>
-**`cosh()`**, **`exp()`**, **`fabs()`**, **`floor()`**, **`fmod()`**, **`frexp()`**, <br>
-**`ldexp()`**, **`log()`**, **`log10()`**, **`modf()`**, **`pow()`**, **`sin()`**, <br>
+* **`acos()`**, **`asin()`**, **`atan()`**, **`atan2()`**, **`ceil()`**, **`cos()`**,
+**`cosh()`**, **`exp()`**, **`fabs()`**, **`floor()`**, **`fmod()`**, **`frexp()`**,
+**`ldexp()`**, **`log()`**, **`log10()`**, **`modf()`**, **`pow()`**, **`sin()`**,
 **`sinh()`**, **`sqrt()`**, **`tan()`**, **`tanh()`**<br>
 
-# Hardware/Software conditions — 
+# Prerequisite Hardware/Software 
 
-## Hardware conditions
+## Hardware 
 All UEFI-enabled x86-64 platforms provide the **80387** **FPU** and
 the **SSE2** instruction set as a minimum.<br>
 
 Access to the **80387** and the **SSE** arithmetic unit is possible in all CPU modes and privilege levels.<br>
 
-## Software conditions
+## Software
 The entire design and development of the [**toro C Library**](https://github.com/KilianKegel/toro-C-Library)
 is done using the latest [**Visual Studio**](https://visualstudio.microsoft.com/vs/) [standard installation for C/C++](https://github.com/KilianKegel/Howto-setup-a-UEFI-Development-PC?tab=readme-ov-file#install-visual-studio-2022).<br>
 **Visual Studio** provides a complete and robust C/C++ development environment that offers excellent build performance and debugging features.<br>
@@ -366,7 +369,7 @@ All wrapper functions are written in assembly language and must be implemented i
 |[**`__cde80387FYL2X()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387FYL2X32.asm)|[**`__cde80387FYL2X()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387FYL2X64.asm)|
 |[**`__cde80387F2XM1()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387F2XM132.asm)|[**`__cde80387F2XM1()`**](https://github.com/KilianKegel/Visual-TORO-C-LIBRARY-for-UEFI/blob/main/toroCLibrary/Library/math_h/__cde80387F2XM164.asm)|
 
-Each function must be added to the project and configured to build for both 32Bit and 64Bit mode in the Property Page:<br>
+Each function must be added to the project and configured to be excluded/included in  32Bit/64Bit build in the Property Page:<br>
 ![](documents/VS2022Prop32.png)
 
 So that each file is employed in build in its respective mode:<br>
@@ -379,10 +382,14 @@ So that each file is employed in build in its respective mode:<br>
 **toroCVS** is a proprietary test suite to validate the **toro C Library**.<br>
 
 ![](documents/toroCVS.png)
-### Basic concept 
+### Basic concept
+**toro C Library** aims to be behaviorally identical to the functions specified by **ANSI C/C89/C90** and **C95**, as implemented by the **Microsoft C Runtime Library** (**LIBCMT.LIB**) provided with **Visual Studio 2026**.<br>
+
 **toro C Library** is validated against the original **Microsoft C Library** in **Visual Studio 2022** — **Microsoft C Library** is the reference implementation.<br>
+
 **toro C Library** is actually a submodule of the **toroCVS** superproject. Each **toro C Library** function has a
 corresponding test module in **toroCVS**.<br>
+
 Because processing speed and storage capacity of current PCs are high, the test suite usually simply uses a kind of brute‑force strategy for validation.<br>
 
 The test suite generates the required test parameters, invokes the **DUT** (*device under test* – math.h function) with these parameters and
@@ -460,34 +467,50 @@ for (uint64_t s = 0; s <= 1; s++)                                               
     .
     .
 ```
+# Summary
+The goal of the **Intel 8087** was to provide the entire floating‑point hardware library on a single chip.<br>
+The IEEE 754 standardization process began in parallel with the design of the **8087** and was finalized in 1985
+with the release of the **Intel 80387**.<br>
 
-# Test results: ***math.h***
-The test results of all **math.h** functions can be found here:<br>
+This enabled engineers and programmers, myself included, to implement reliable, portable floating‑point software on 
+x86 processors.
+
+**ARM**, **RISC-V** and **LOONGSON** should consider licensing the **8087** IP core from **Intel**.<br>
+With only about 40,000 transistors, the **8087** could be implemented with a very small area footprint on modern semiconductor processes.<br>
+
+## Test results: ***math.h***
+The test results of all **math.h** functions **toro C Library** vs. **Microsoft C Library** are compared for each function in the table below:<br>
 (to keep diff file size small, only 15 lines around differences are shown)<br>
-* [**acos()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/acos.html)<br>
-* [**asin()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/asin.html)<br>
-* [**atan()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/atan.html)<br>
-* [**atan2()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/atan2.html)<br>
-* [**ceil()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/ceil.html)<br>
-* [**cos()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/cos.html)<br>
-* [**cosh()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/cosh.html)<br>
-* [**exp()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/exp.html)<br>
-* [**fabs()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/fabs.html)<br>
-* [**floor()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/floor.html)<br>
-* [**fmod()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/fmod.html)<br>
-* [**frexp()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/frexp.html)<br>
-* [**ldexp()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/ldexp.html)<br>
-* [**log()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/log.html)<br>
-* [**log10()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/log10.html)<br>
-* [**modf()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/modf.html)<br>
-* [**pow()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/pow.html)<br>
-* [**sin()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/sin.html)<br>
-* [**sinh()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/sinh.html)<br>
-* [**sqrt()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/sqrt.html)<br>
-* [**tan()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/tan.html)<br>
-* [**tanh()**](https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/tanh.html)<br>
 
-### Summary
+<table>
+<th>toro C Library </th> <th >MSFT C Library</th>
+<tr><th colspan="2"><a href=https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/acos.html>acos()</a></th></tr>
+<tr><th colspan="2"><a href=https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/asin.html>asin()</a></th></tr>
+<tr><th colspan="2"><a href=https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/atan.html>atan()</a></th></tr>
+<tr><th colspan="2"><a href=https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/atan2.html>atan2()</a></th></tr>
+<tr><th colspan="2"><a href=https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/ceil.html>ceil()</a></th></tr>
+<tr><th colspan="2"><a href=https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/cos.html>cos()</a></th></tr>
+<tr><th colspan="2"><a href=https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/cosh.html>cosh()</a></th></tr>
+<tr><th colspan="2"><a href=https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/exp.html>exp()</a></th></tr>
+<tr><th colspan="2"><a href=https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/fabs.html>fabs()</a></th></tr>
+<tr><th colspan="2"><a href=https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/floor.html>floor()</a></th></tr>
+<tr><th colspan="2"><a href=https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/fmod.html>fmod()</a></th></tr>
+<tr><th colspan="2"><a href=https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/frexp.html>frexp()</a></th></tr>
+<tr><th colspan="2"><a href=https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/ldexp.html>ldexp()</a></th></tr>
+<tr><th colspan="2"><a href=https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/log.html>log()</a></th></tr>
+<tr><th colspan="2"><a href=https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/log10.html>log10()</a></th></tr>
+<tr><th colspan="2"><a href=https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/modf.html>modf()</a></th></tr>
+<tr><th colspan="2"><a href=https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/pow.html>pow()</a></th></tr>
+<tr><th colspan="2"><a href=https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/sin.html>sin()</a></th></tr>
+<tr><th colspan="2"><a href=https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/sinh.html>sinh()</a></th></tr>
+<tr><th colspan="2"><a href=https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/sqrt.html>sqrt()</a></th></tr>
+<tr><th colspan="2"><a href=https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/tan.html>tan()</a></th></tr>
+<tr><th colspan="2"><a href=https://cdn.githubraw.com/KilianKegel/toroCVSreport/main/report/math_h/x64/tanh.html>tanh()</a></th></tr>
+
+</table
+
+
+
 
 
 
