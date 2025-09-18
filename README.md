@@ -34,7 +34,7 @@ We did not do as well as he wanted, but we did better than he expected."***<br>
     * [Basic concept](README.md#basic-concept)
     * [Example: sin() validation](README.md#example-sin-validation)
 * [Summary](README.md#summary)
-* [Testresults: math.h](README.md#testresults-mathh)
+* [Testresults: math.h](README.md#test-results-mathh)
 
 # Preface
 Developing accurate mathematical floating‑point functions is a challenge that usually
